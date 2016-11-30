@@ -1,12 +1,10 @@
 package chatroom.assignment7;
 
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Date;
 
-import chatroom.assignment7.ChatServer.ClientHandler;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -28,38 +26,37 @@ import javafx.stage.Stage;
 public class StartServer extends Application{
 	private TextArea ta = new TextArea(); 
 	private String[] text = new String[]{"a","b","c"};
-
-	// Number a client 
-	private int clientNo = 0; 
-	
+	Socket socket;
+	private int clientNo = 0;
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception{
 		// Create a scene and place it in the stage 
 		Scene scene = new Scene(new ScrollPane(ta), 450, 200); 
-		primaryStage.setTitle("MultiThreadServer"); // Set the stage title 
+		primaryStage.setTitle("Leo's Server"); // Set the stage title 
 		primaryStage.setScene(scene); // Place the scene in the stage 
 		primaryStage.show(); // Display the stage 
-	
-		
-		
 		new Thread( () -> { 
+
 			try {  // Create a server socket
-				
-				ChatServer.main(text);
+				System.out.println("here1");
+
+				ChatServer server = new ChatServer();
+				System.out.println("here2");
 				ServerSocket serverSocket = new ServerSocket(8000); 
+				System.out.println("here");
 				ta.appendText("MultiThreadServer started at " 
 						+ new Date() + '\n'); 
 
 
 				while (true) { 
 					// Listen for a new connection request 
-					Socket socket = serverSocket.accept(); 
+					socket = serverSocket.accept(); 
 
 					// Increment clientNo 
 					clientNo++; 
+					System.out.println("New client added");
 
-					Platform.runLater( () -> { 
 						// Display the client number 
 						ta.appendText("Starting thread for client " + clientNo +
 								" at " + new Date() + '\n'); 
@@ -69,20 +66,18 @@ public class StartServer extends Application{
 						ta.appendText("Client " + clientNo + "'s host name is "
 								+ inetAddress.getHostName() + "\n");
 						ta.appendText("Client " + clientNo + "'s IP Address is " 
-								+ inetAddress.getHostAddress() + "\n");	}); 
+								+ inetAddress.getHostAddress() + "\n");
 
+				}
 
-					// Create and start a new thread for the connection
-					new Thread(new ClientHandler(socket)).start();
-				} 
 			}
 			catch(Exception e) { 
 				System.err.println(e);
 			}
 		}).start();
 	}
-	
-	public static void main(String[] args) {
+	public static void main(String[] args){
 		launch(args);
 	}
+
 }
