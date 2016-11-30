@@ -84,13 +84,13 @@ public class MultiThreadServer extends Application{ // Text area for displaying 
 			Thread t = new Thread(new ClientHandler(clientSocket));
 			t.start();
 			System.out.println("got a connection");
+			System.out.println(clientOutputStreams);
 		}
 
 	}
 
 
 	private void notifyClients(String message) {
-
 
 		for (PrintWriter writer : clientOutputStreams) {
 			writer.println(message);
@@ -110,6 +110,7 @@ public class MultiThreadServer extends Application{ // Text area for displaying 
 			String message;
 			try {
 				while ((message = reader.readLine()) != null) {
+					System.out.println("BLAH");
 					System.out.println("read " + message);
 					notifyClients(message);
 				}

@@ -5,7 +5,8 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import javafx.application.Application; 
+import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets; 
 import javafx.geometry.Pos; 
 import javafx.scene.Scene; 
@@ -19,6 +20,12 @@ import javafx.stage.Stage;
 
 
 public class Client extends Application { 
+	TextField outgoing;
+	TextArea incoming;
+	private BufferedReader reader;
+	PrintWriter writer;
+
+
 	// IO streams 
 	DataOutputStream toServer = null; 
 	DataInputStream fromServer = null;
@@ -26,39 +33,29 @@ public class Client extends Application {
 	Scanner sc = new Scanner(System.in);
 	static ArrayList<String> names = new ArrayList<String>();
 	
-	public Client(){
-		while(true){
-			System.out.println("Enter a name for your chat");
-			this.name = sc.nextLine();
-			System.out.println(names);
-			
-			//THIS DOESN"T WORK
-			if(!names.contains(this.name)){
-				names.add(this.name);
-				System.out.println(names);
-				System.out.println("Your chat room name is now: " + this.name);
-				break;
-			}
-		}
-	}
-
 
 	@Override // Override the start method in the Application class 
 	public void start(Stage primaryStage) { 
 		// Panel p to hold the label and text field 
+		try {
+			setUpNetworking();
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		BorderPane paneForTextField = new BorderPane(); 
 		paneForTextField.setPadding(new Insets(5, 5, 5, 5)); 
 		paneForTextField.setStyle("-fx-border-color: green"); 
 		paneForTextField.setLeft(new Label("Enter a command or message: ")); 
 
-		TextField tf = new TextField(); 
-		tf.setAlignment(Pos.BOTTOM_RIGHT); 
-		paneForTextField.setCenter(tf); 
+		outgoing = new TextField(); 
+		outgoing.setAlignment(Pos.BOTTOM_RIGHT); 
+		paneForTextField.setCenter(outgoing); 
 
 		BorderPane mainPane = new BorderPane(); 
 		// Text area to display contents 
-		TextArea ta = new TextArea(); 
-		mainPane.setCenter(new ScrollPane(ta)); 
+		incoming = new TextArea(); 
+		mainPane.setCenter(new ScrollPane(incoming)); 
 		mainPane.setTop(paneForTextField); 
 
 
@@ -68,34 +65,19 @@ public class Client extends Application {
 		primaryStage.setScene(scene); // Place the scene in the stage 
 		primaryStage.show(); // Display the stage 
 
-		tf.setOnAction(e -> { 
-			try { 
-				// Get the radius from the text field 
-				//double radius = Double.parseDouble(tf.getText().trim()); 
-				String message = tf.getText();
-				//if command is "send <name>" then it will send to the client name 
-				if(message.toLowerCase().contains("send")){
-					//still need to check if this is a valid name!
-					toServer.writeUTF(message.substring(5).toUpperCase());
-					toServer.flush();
-				}else{
-					//send an actual message to the server
-					toServer.writeUTF(message); 
-					toServer.flush(); 
-				}
-
-//				// Get area from the server 
-				String area = fromServer.readUTF(); 
-//
-//				// Display to the text area 
-				ta.appendText("Radius is " + area + "\n"); 
-				ta.appendText("Area received from the server is "
-						+ area + '\n');
-
-			} 
-			catch (IOException ex) { 
-				System.err.println(ex); 
-			} 
+		outgoing.setOnAction(e -> { 
+			try {
+				//writer.println(e);
+				//writer.flush();
+				//System.out.println(outgoing.getText());
+				toServer.writeUTF(outgoing.getText());
+				//outgoing.setText("");
+				//outgoing.requestFocus();
+				//System.out.println("printing");
+				//new Client().run();
+			} catch (Exception b) {
+				b.printStackTrace();
+			}
 		}); 
 
 		try { 
@@ -112,7 +94,41 @@ public class Client extends Application {
 			toServer = new DataOutputStream(socket.getOutputStream()); 
 		} 
 		catch (IOException ex) { 
-			ta.appendText(ex.toString() + '\n');
+			incoming.appendText(ex.toString() + '\n');
+		}
+	}
+	
+	private void setUpNetworking() throws Exception {
+		@SuppressWarnings("resource")
+		Socket sock = new Socket("127.0.0.1", 4242);
+		InputStreamReader streamReader = new InputStreamReader(sock.getInputStream());
+		reader = new BufferedReader(streamReader);
+		writer = new PrintWriter(sock.getOutputStream());
+		System.out.println("networking established");
+		Thread readerThread = new Thread(new IncomingReader());
+		readerThread.start();
+	}
+
+	class SendButtonListener{
+		public void actionPerformed(ActionEvent ev) {
+			writer.println(outgoing.getText());
+			writer.flush();
+			outgoing.setText("");
+			outgoing.requestFocus();
+		}
+	}
+
+	class IncomingReader implements Runnable {
+		public void run() {
+			String message;
+			try {
+				while ((message = reader.readLine()) != null) {
+					
+						incoming.appendText(message + "\n");
+				}
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
 		}
 	}
 	
