@@ -46,17 +46,17 @@ public class Client extends Application {
 		BorderPane paneForTextField = new BorderPane(); 
 		paneForTextField.setPadding(new Insets(5, 5, 5, 5)); 
 		paneForTextField.setStyle("-fx-border-color: green"); 
-		paneForTextField.setLeft(new Label("Enter a command or message: ")); 
+		paneForTextField.setLeft(new Label("Enter a message: ")); 
 
 		outgoing = new TextField(); 
-		outgoing.setAlignment(Pos.BOTTOM_RIGHT); 
+		outgoing.setAlignment(Pos.BOTTOM_LEFT); 
 		paneForTextField.setCenter(outgoing); 
 
 		BorderPane mainPane = new BorderPane(); 
 		// Text area to display contents 
 		incoming = new TextArea(); 
 		mainPane.setCenter(new ScrollPane(incoming)); 
-		mainPane.setTop(paneForTextField); 
+		mainPane.setBottom(paneForTextField); 
 
 
 		// Create a scene and place it in the stage 
