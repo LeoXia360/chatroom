@@ -1,7 +1,11 @@
-package chatroom.chat_javafx_liang;
+package assignment7;
 
-import java.io.*; 
+import java.io.*;
 import java.net.*;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -21,8 +25,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage; 
 
-
-public class Client extends Application { 
+public class ChatClient extends Application{
 	TextField outgoing;
 	TextArea incoming;
 	private BufferedReader reader;

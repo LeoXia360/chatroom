@@ -1,5 +1,5 @@
 
-package chatroom.assignment7;
+package assignment7;
 
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -12,6 +12,7 @@ public class ClientObserver extends PrintWriter implements Observer {
 	}
 	@Override
 	public void update(Observable o, Object arg) {
+		System.out.println("hi");
 		this.println(arg); //writer.println(arg);
 		this.flush(); //writer.flush();
 	}

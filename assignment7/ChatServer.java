@@ -1,4 +1,4 @@
-package chatroom.assignment7;
+package assignment7;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,10 +7,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Observable;
 
-public class Server extends Observable {
+public class ChatServer extends Observable {
 	public static void main(String[] args) {
 		try {
-			new Client().setUpNetworking();
+			new ChatServer().setUpNetworking();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
