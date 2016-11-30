@@ -30,7 +30,7 @@ public class StartServer extends Application{
 		primaryStage.show(); // Display the stage 
 		new Thread( () -> { 
 			try {  // Create a server socket
-				ChatServer.main(text);
+				ChatServer server = new ChatServer(primaryStage);
 			}
 			catch(Exception e) { 
 				System.err.println(e);

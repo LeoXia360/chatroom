@@ -7,10 +7,25 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Observable;
 
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets; 
+import javafx.geometry.Pos; 
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label; 
+import javafx.scene.control.ScrollPane; 
+import javafx.scene.control.TextArea;
+import javafx.stage.Stage;
+
 public class ChatServer extends Observable {
-	public static void main(String[] args) {
+	private TextArea ta;
+	
+	public ChatServer(TextArea ta) {
 		try {
-			new ChatServer().setUpNetworking();
+			this.ta = ta;
+			setUpNetworking();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
