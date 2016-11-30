@@ -107,9 +107,11 @@ public class MultiThreadServer extends Application{ // Text area for displaying 
 		}
 
 		public void run() {
+			System.out.println("asiodgaowigjaoiwegj");
 			String message;
 			try {
-				while ((message = reader.readLine()) != null) {
+				while (reader.readLine() != null) {
+					message = reader.readLine();
 					System.out.println("BLAH");
 					System.out.println("read " + message);
 					notifyClients(message);
@@ -117,6 +119,8 @@ public class MultiThreadServer extends Application{ // Text area for displaying 
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			System.out.println("asiodgaowigjaoiwegj");
+
 		}
 	}
 	

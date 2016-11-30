@@ -70,7 +70,12 @@ public class Client extends Application {
 				//writer.println(e);
 				//writer.flush();
 				//System.out.println(outgoing.getText());
-				toServer.writeUTF(outgoing.getText());
+				
+				writer.println(outgoing.getText());
+				writer.flush();
+				outgoing.setText("");
+				outgoing.requestFocus();
+				
 				//outgoing.setText("");
 				//outgoing.requestFocus();
 				//System.out.println("printing");
