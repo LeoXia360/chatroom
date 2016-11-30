@@ -1,41 +1,56 @@
-package clientServer;
+package chatroom.assignment7;
 
-/*
- * Author: Vallath N.
- * Simple demonstration of client and server communicating with doubles.
- */
-import java.io.*;
-import java.net.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Observable;
 
-public class Server {
-
-	int port = 8000;
-	DataInputStream in;
-	DataOutputStream out;
-	ServerSocket server;
-	Socket socket;
-
-	void runme() {
+public class Server extends Observable {
+	public static void main(String[] args) {
 		try {
-			// Create a server socket, and define in and out streams for it
-			server = new ServerSocket(port);
-			socket = server.accept();
-			in = new DataInputStream(socket.getInputStream());
-			out = new DataOutputStream(socket.getOutputStream());
-			
-			// loop keeps reading from client, squares it, and sends the result
-			// back to the client.
-			while (true) {
-				Double msg = in.readDouble();
-				System.out.println("Server received " + msg);
-				out.writeDouble(msg*msg);
-				out.flush();
-				System.out.println("Server: I wrote " + msg*msg + " to client.");
-			}
-		} catch (IOException e) {
+			new Client().setUpNetworking();
+		} catch (Exception e) {
 			e.printStackTrace();
-		}	
+		}
 	}
-	
 
+	private void setUpNetworking() throws Exception {
+		@SuppressWarnings("resource")
+		ServerSocket serverSock = new ServerSocket(4242);
+		while (true) {
+			Socket clientSocket = serverSock.accept();
+			ClientObserver writer = new ClientObserver(clientSocket.getOutputStream());
+			Thread t = new Thread(new ClientHandler(clientSocket));
+			t.start();
+			this.addObserver(writer);
+			System.out.println("got a connection");
+		}
+	}
+	class ClientHandler implements Runnable {
+		private BufferedReader reader;
+
+		public ClientHandler(Socket clientSocket) {
+			Socket sock = clientSocket;
+			try {
+				reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		public void run() {
+			String message;
+			try {
+				while ((message = reader.readLine()) != null) {
+					System.out.println("server read "+message);
+					setChanged();
+					notifyObservers(message);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 }

@@ -1,8 +1,11 @@
-package chat_javafx_liang;
+package chatroom.chat_javafx_liang;
 
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -11,9 +14,11 @@ import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 
 
-public class MultiThreadServer extends Application
-{ // Text area for displaying contents 
+public class MultiThreadServer extends Application{ // Text area for displaying contents 
 	private TextArea ta = new TextArea(); 
+	private ArrayList<PrintWriter> clientOutputStreams;
+
+
 
 	// Number a client 
 	private int clientNo = 0; 
@@ -52,9 +57,13 @@ public class MultiThreadServer extends Application
 						ta.appendText("Client " + clientNo + "'s IP Address is " 
 								+ inetAddress.getHostAddress() + "\n");	}); 
 
-
+					
 					// Create and start a new thread for the connection
-					new Thread(new HandleAClient(socket)).start();
+					try {
+						new MultiThreadServer().setUpNetworking();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				} 
 			} 
 			catch(IOException ex) { 
@@ -62,38 +71,49 @@ public class MultiThreadServer extends Application
 			}
 		}).start();
 	}
+	
+	private void setUpNetworking() throws Exception {
+		clientOutputStreams = new ArrayList<PrintWriter>();
+		@SuppressWarnings("resource")
+		ServerSocket serverSock = new ServerSocket(4242);
+		while (true) {
+			Socket clientSocket = serverSock.accept();
+			PrintWriter writer = new PrintWriter(clientSocket.getOutputStream());
+			clientOutputStreams.add(writer);
 
-
-	// Define the thread class for handling
-	class HandleAClient implements Runnable {
-		private Socket socket; // A connected socket
-		/** Construct a thread */ 
-		public HandleAClient(Socket socket) { 
-			this.socket = socket;
+			Thread t = new Thread(new ClientHandler(clientSocket));
+			t.start();
+			System.out.println("got a connection");
 		}
-		/** Run a thread */
-		public void run() { 
-			try {
-				// Create data input and output streams
-				DataInputStream inputFromClient = new DataInputStream( socket.getInputStream());
-				DataOutputStream outputToClient = new DataOutputStream( socket.getOutputStream());
-				// Continuously serve the client
-				while (true) { 
-					// Receive radius from the client 
-					String radius = inputFromClient.readUTF();
-					System.out.println(radius);
 
-//					// Compute area
-//					double area = radius * radius * Math.PI; 
-//					// Send area back to the client
-					outputToClient.writeUTF(radius);
-//					Platform.runLater(() -> { 
-//						ta.appendText("radius received from client: " +
-//								radius + '\n'); 
-//						ta.appendText("Area found: " + area + '\n');
-//					});
+	}
+
+
+	private void notifyClients(String message) {
+
+
+		for (PrintWriter writer : clientOutputStreams) {
+			writer.println(message);
+			writer.flush();
+		}
+	}
+
+	class ClientHandler implements Runnable {
+		private BufferedReader reader;
+
+		public ClientHandler(Socket clientSocket) throws IOException {
+			Socket sock = clientSocket;
+			reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+		}
+
+		public void run() {
+			String message;
+			try {
+				while ((message = reader.readLine()) != null) {
+					System.out.println("read " + message);
+					notifyClients(message);
 				}
-			} catch(IOException e) {
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}

@@ -1,7 +1,10 @@
-package chat_javafx_liang;
+package chatroom.chat_javafx_liang;
 
 import java.io.*; 
-import java.net.*; 
+import java.net.*;
+import java.util.ArrayList;
+import java.util.Scanner;
+
 import javafx.application.Application; 
 import javafx.geometry.Insets; 
 import javafx.geometry.Pos; 
@@ -19,6 +22,25 @@ public class Client extends Application {
 	// IO streams 
 	DataOutputStream toServer = null; 
 	DataInputStream fromServer = null;
+	private String name = null;
+	Scanner sc = new Scanner(System.in);
+	static ArrayList<String> names = new ArrayList<String>();
+	
+	public Client(){
+		while(true){
+			System.out.println("Enter a name for your chat");
+			this.name = sc.nextLine();
+			System.out.println(names);
+			
+			//THIS DOESN"T WORK
+			if(!names.contains(this.name)){
+				names.add(this.name);
+				System.out.println(names);
+				System.out.println("Your chat room name is now: " + this.name);
+				break;
+			}
+		}
+	}
 
 
 	@Override // Override the start method in the Application class 
@@ -27,7 +49,7 @@ public class Client extends Application {
 		BorderPane paneForTextField = new BorderPane(); 
 		paneForTextField.setPadding(new Insets(5, 5, 5, 5)); 
 		paneForTextField.setStyle("-fx-border-color: green"); 
-		paneForTextField.setLeft(new Label("Enter a radius: ")); 
+		paneForTextField.setLeft(new Label("Enter a command or message: ")); 
 
 		TextField tf = new TextField(); 
 		tf.setAlignment(Pos.BOTTOM_RIGHT); 
@@ -51,10 +73,16 @@ public class Client extends Application {
 				// Get the radius from the text field 
 				//double radius = Double.parseDouble(tf.getText().trim()); 
 				String message = tf.getText();
-
-				// Send the radius to the server 
-				toServer.writeUTF(message); 
-				toServer.flush(); 
+				//if command is "send <name>" then it will send to the client name 
+				if(message.toLowerCase().contains("send")){
+					//still need to check if this is a valid name!
+					toServer.writeUTF(message.substring(5).toUpperCase());
+					toServer.flush();
+				}else{
+					//send an actual message to the server
+					toServer.writeUTF(message); 
+					toServer.flush(); 
+				}
 
 //				// Get area from the server 
 				String area = fromServer.readUTF(); 
