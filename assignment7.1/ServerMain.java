@@ -66,4 +66,8 @@ public class ServerMain extends Application {
 			}
 		}).start();
 	}
+	
+	public int getportNumber (){
+		return this.portNumber;
+	}
 }
