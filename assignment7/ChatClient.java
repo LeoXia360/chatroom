@@ -1,4 +1,4 @@
-package assignment7;
+package chatroom.assignment7;
 
 import java.io.*;
 import java.net.*;
