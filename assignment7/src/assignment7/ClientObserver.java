@@ -12,7 +12,14 @@ public class ClientObserver extends PrintWriter implements Observer {
 	}
 	@Override
 	public void update(Observable o, Object arg) {
-		System.out.println("hi");
+		String n = (String) arg;
+		if(n.contains("send")){
+			String temp = n.substring(n.indexOf("send"));
+			n = temp.substring(5, temp.indexOf(":"));
+			
+			
+			System.out.println("This is n: " + n);
+		}
 		this.println(arg); //writer.println(arg);
 		this.flush(); //writer.flush();
 	}

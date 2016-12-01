@@ -30,6 +30,7 @@ public class ChatClient extends Application{
 	TextArea incoming;
 	private BufferedReader reader;
 	PrintWriter writer;
+	String client_name;
 
 
 	// IO streams 
@@ -57,6 +58,7 @@ public class ChatClient extends Application{
 		
 		TextField getName = new TextField();
 		Label nameLabel = new Label("Enter Name: ");
+		this.client_name = nameLabel.getText();
 		
 		Button startChat = new Button("Start Chat");
 		startChat.setOnAction(new EventHandler<ActionEvent>(){

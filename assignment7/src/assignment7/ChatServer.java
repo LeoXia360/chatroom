@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Observable;
 
 import javafx.application.Application;
@@ -21,7 +23,8 @@ import javafx.stage.Stage;
 
 public class ChatServer extends Observable {
 	private TextArea ta;
-	
+	static HashMap<String, ClientObserver> h = new HashMap<String, ClientObserver>();
+	//static ArrayList<ClientObserver> client_array = new ArrayList<ClientObserver>();
 	public ChatServer() {
 		try {
 			setUpNetworking();
@@ -37,9 +40,12 @@ public class ChatServer extends Observable {
 			Socket clientSocket = serverSock.accept();
 			ServerMain.newClient(clientSocket);
 			ClientObserver writer = new ClientObserver(clientSocket.getOutputStream());
+			//client_array.add(writer);
+			h.put(key, writer);
 			Thread t = new Thread(new ClientHandler(clientSocket));
 			t.start();
 			this.addObserver(writer);
+			//asdfasd
 			System.out.println("got a connection");
 		}
 	}
