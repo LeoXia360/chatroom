@@ -35,6 +35,7 @@ public class ChatServer extends Observable {
 		ServerSocket serverSock = new ServerSocket(4242);
 		while (true) {
 			Socket clientSocket = serverSock.accept();
+			StartServer.newClient(clientSocket);
 			ClientObserver writer = new ClientObserver(clientSocket.getOutputStream());
 			Thread t = new Thread(new ClientHandler(clientSocket));
 			t.start();

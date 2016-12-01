@@ -24,10 +24,10 @@ import javafx.stage.Stage;
 
 
 public class StartServer extends Application{
-	private TextArea ta = new TextArea(); 
+	private static TextArea ta = new TextArea(); 
 	private String[] text = new String[]{"a","b","c"};
-	Socket socket;
-	private int clientNo = 0;
+	static Socket socket;
+	private static int clientNo = 0;
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception{
@@ -40,33 +40,19 @@ public class StartServer extends Application{
 
 			try {  // Create a server socket
 				System.out.println("here1");
-
-				ChatServer server = new ChatServer();
+				//STUCK IN AN INFINITE LOOP
 				System.out.println("here2");
 				ServerSocket serverSocket = new ServerSocket(8000); 
 				System.out.println("here");
 				ta.appendText("MultiThreadServer started at " 
 						+ new Date() + '\n'); 
-
-
+				ChatServer server = new ChatServer();
+				
 				while (true) { 
 					// Listen for a new connection request 
-					socket = serverSocket.accept(); 
 
 					// Increment clientNo 
-					clientNo++; 
-					System.out.println("New client added");
-
-						// Display the client number 
-						ta.appendText("Starting thread for client " + clientNo +
-								" at " + new Date() + '\n'); 
-
-						// Find the client's host name, and IP address 
-						InetAddress inetAddress = socket.getInetAddress();
-						ta.appendText("Client " + clientNo + "'s host name is "
-								+ inetAddress.getHostName() + "\n");
-						ta.appendText("Client " + clientNo + "'s IP Address is " 
-								+ inetAddress.getHostAddress() + "\n");
+					
 
 				}
 
@@ -76,6 +62,24 @@ public class StartServer extends Application{
 			}
 		}).start();
 	}
+	
+	
+	public static void newClient(Socket socket){
+		clientNo++; 
+		System.out.println("New client added");
+
+			// Display the client number 
+			ta.appendText("Starting thread for client " + clientNo +
+					" at " + new Date() + '\n'); 
+
+			// Find the client's host name, and IP address 
+			InetAddress inetAddress = socket.getInetAddress();
+			ta.appendText("Client " + clientNo + "'s host name is "
+					+ inetAddress.getHostName() + "\n");
+			ta.appendText("Client " + clientNo + "'s IP Address is " 
+					+ inetAddress.getHostAddress() + "\n");
+	}
+	
 	public static void main(String[] args){
 		launch(args);
 	}

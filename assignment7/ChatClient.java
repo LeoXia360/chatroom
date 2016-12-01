@@ -47,6 +47,7 @@ public class ChatClient extends Application{
 			setUpNetworking();
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
+			System.out.println("Error here");
 			e1.printStackTrace();
 		}
 		GridPane root = new GridPane();
