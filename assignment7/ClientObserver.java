@@ -1,5 +1,5 @@
 
-package chatroom.assignment7;
+package assignment7;
 
 import java.io.OutputStream;
 import java.io.PrintWriter;

@@ -1,4 +1,4 @@
-package chatroom.assignment7;
+package assignment7;
 
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -23,7 +23,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage; 
 
 
-public class StartServer extends Application{
+public class ServerMain extends Application{
 	private static TextArea ta = new TextArea(); 
 	private String[] text = new String[]{"a","b","c"};
 	static Socket socket;

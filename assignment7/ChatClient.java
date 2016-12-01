@@ -1,4 +1,4 @@
-package chatroom.assignment7;
+package assignment7;
 
 import java.io.*;
 import java.net.*;
@@ -83,7 +83,7 @@ public class ChatClient extends Application{
 
 				// Create a scene and place it in the stage 
 				Scene scene = new Scene(mainPane, 450, 200); 
-				primaryStage.setTitle("Client"); // Set the stage title 
+				primaryStage.setTitle(name); // Set the stage title 
 				primaryStage.setScene(scene); // Place the scene in the stage 
 				primaryStage.show(); // Display the stage 
 

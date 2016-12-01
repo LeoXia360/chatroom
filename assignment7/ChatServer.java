@@ -1,4 +1,4 @@
-package chatroom.assignment7;
+package assignment7;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -35,7 +35,7 @@ public class ChatServer extends Observable {
 		ServerSocket serverSock = new ServerSocket(4242);
 		while (true) {
 			Socket clientSocket = serverSock.accept();
-			StartServer.newClient(clientSocket);
+			ServerMain.newClient(clientSocket);
 			ClientObserver writer = new ClientObserver(clientSocket.getOutputStream());
 			Thread t = new Thread(new ClientHandler(clientSocket));
 			t.start();
