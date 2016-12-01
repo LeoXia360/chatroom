@@ -23,7 +23,7 @@ import javafx.stage.Stage;
 
 public class ChatServer extends Observable {
 	private TextArea ta;
-	static HashMap<String, ClientObserver> h = new HashMap<String, ClientObserver>();
+	static HashMap<String, Socket> h = new HashMap<String, Socket>();
 	//static ArrayList<ClientObserver> client_array = new ArrayList<ClientObserver>();
 	public ChatServer() {
 		try {
@@ -41,7 +41,7 @@ public class ChatServer extends Observable {
 			ServerMain.newClient(clientSocket);
 			ClientObserver writer = new ClientObserver(clientSocket.getOutputStream());
 			//client_array.add(writer);
-			h.put(key, writer);
+			h.put(key, clientSocket);
 			Thread t = new Thread(new ClientHandler(clientSocket));
 			t.start();
 			this.addObserver(writer);
